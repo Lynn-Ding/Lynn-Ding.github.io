@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI學生個人網站</title>
+  <style>
+    /* 全域樣式 */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #000;  /* 深色背景襯托霓虹效果 */
+      color: #fff;
+      overflow-x: hidden;
+    }
+    a { color: #0ff; text-decoration: none; }
+    a:hover { text-shadow: 0 0 5px #0ff; }
+
+    /* 導覽列樣式 */
+    nav {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.6);  /* 半透明黑底 */
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+    }
+    nav .logo {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 5px #0ff;
+    }
+    nav .nav-links a {
+      margin: 0 15px;
+      font-size: 1em;
+      position: relative;
+    }
+    nav .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: -4px;
+      width: 100%; height: 2px;
+      background: #0ff;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s;
+    }
+    nav .nav-links a:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    /* 區塊樣式 */
+    section {
+      padding: 80px 20px;
+      min-height: 100vh;
+      scroll-margin-top: 80px; /* Anchor offset for fixed nav */
+    }
+    section:nth-of-type(odd) {
+      background: #0a0a0a;
+    }
+    section:nth-of-type(even) {
+      background: #111;
+    }
+    section h2 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 20px;
+      text-shadow: 0 0 5px #f0f;
+    }
+    section p {
+      max-width: 800px;
+      margin: 0 auto 20px auto;
+      line-height: 1.6;
+      font-size: 1.1em;
+    }
+
+    /* 首頁專區特別樣式 */
+    #home {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    #home canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+    #home-content {  /* 容器包裹圖像和語錄文字，使其在canvas之上 */
+      position: relative;
+      z-index: 1;
+    }
+    #home img {
+      max-width: 80%;
+      height: auto;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    #home img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+    }
+    #tech-quote {
+      margin-top: 15px;
+      font-style: italic;
+      color: #0ff;
+      text-shadow: 0 0 5px #0ff;
+      min-height: 1.5em; /* 保留空間以免沒有語錄時版面跳動 */
+    }
+
+    /* 作品集網格 */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .portfolio-grid a {
+      display: block;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    .portfolio-grid img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .portfolio-grid a:hover img {
+      transform: scale(1.05);
+    }
+    .portfolio-grid figcaption {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      text-align: center;
+      font-size: 0.9em;
+    }
+
+    /* 手機版導覽調整 */
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        padding: 10px;
+      }
+      nav .nav-links {
+        margin-top: 5px;
+      }
+      nav .nav-links a {
+        margin: 5px 10px;
+        display: inline-block;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 導覽列 -->
+  <nav>
+    <div class="logo">AI Classes</div>
+    <div class="nav-links">
+      <a href="#home">首頁</a>
+      <a href="#about">關於我</a>
+      <a href="#portfolio">作品集</a>
+      <a href="#contact">聯絡我</a>
+    </div>
+  </nav>
+
+  <!-- 首頁區塊 -->
+  <section id="home">
+    <!-- 粒子動畫背景畫布 -->
+    <!-- Canvas will be appended by JavaScript -->
+    <div id="home-content">
+      <img id="mainImage" src="貓狗.jpeg" alt="半貓半狗科技形象" />
+      <p id="tech-quote">   </p> <!-- 初始語錄留空 -->
+    </div>
+  </section>
+
+  <!-- 關於我區塊 -->
+  <section id="about">
+    <h2>關於我</h2>
+    <p>大家好，我是一名修讀人工智慧相關課程的學生。在課程中我發現深度學習模型的開發與應用遠比我想像得更加廣泛，課堂上我不僅對AI有更深的認識，也想藉由這次機會深入了解AI。</p>
+    <p>透過這個網站，希望與大家分享我在課堂上的所學，並推廣AI的創新應用。
+    <p>在這個網站中的程式碼由立台灣海洋大學-廖柏凱教授提供，內容包含基礎python、影像辨識、資料標記等AI相關的線上課程。
+  </section>
+
+  <!-- 作品集區塊 -->
+  <section id="portfolio">
+    <h2>作品集</h2>
+    <div class="portfolio-grid">
+      <a href=" F0753_ch10_samples.ipynb">
+        <figure>
+          <img src="爬蟲.png" alt="作品1示意圖" />
+          <figcaption>爬蟲</figcaption>
+        </figure>
+      </a>
+      <a href="ComVis_ch03_MNIST.ipynb">
+        <figure>
+          <img src="CNN.png" alt="作品2示意圖" />
+          <figcaption>簡單CNN神經網絡</figcaption>
+        </figure>
+      </a>
+      <a href="ComVis_ch01_photoformat.ipynb">
+        <figure>
+          <img src="ai辨識.jpg"alt="作品3示意圖"  />
+          <figcaption>影像格式與讀取影像</figcaption>
+        </figure>
+      </a>
+    </div>
+  </section>
+
+  <!-- 聯絡我區塊 -->
+  <section id="contact">
+    <h2>聯絡我</h2>
+    <p>歡迎透過電子郵件與我聯絡：</p>
+    <p>Email: <a href="mailto:ding900924@gmail.com">ding900924@gmail.com</a></p>
+  </section>
+
+  <!-- JavaScript互動功能 -->
+  <script>
+    // 粒子連線背景動畫
+    (function() {
+      const homeSection = document.getElementById('home');
+      // 建立畫布
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      homeSection.insertBefore(canvas, document.getElementById('home-content'));
+      canvas.width = homeSection.clientWidth;
+      canvas.height = homeSection.clientHeight;
+
+      // 調整畫布尺寸函數（確保視窗縮放時覆蓋整個區域）
+      function resizeCanvas() {
+        canvas.width = homeSection.clientWidth;
+        canvas.height = homeSection.clientHeight;
+        initParticles(); // 重新初始化粒子
+      }
+      window.addEventListener('resize', resizeCanvas);
+
+      // 初始化粒子
+      let particles = [];
+      function initParticles() {
+        particles = [];
+        const num = Math.floor((canvas.width * canvas.height) / 15000);  // 粒子數量取決於區域大小
+        for (let i = 0; i < num; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 1,  // 水平速度
+            vy: (Math.random() - 0.5) * 1   // 垂直速度
+          });
+        }
+      }
+      initParticles();
+
+      // 滑鼠座標
+      const mouse = { x: 0, y: 0, active: false };
+      canvas.addEventListener('mousemove', function(e) {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+        mouse.active = true;
+      });
+      canvas.addEventListener('mouseleave', function() {
+        mouse.active = false;
+      });
+
+      // 繪製動畫
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // 設定發光效果
+        ctx.shadowBlur = 8;
+        // 繪製連線
+        ctx.shadowColor = "#0ff";
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          // 移動粒子
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+          // 與其他粒子連線
+          for (let j = i + 1; j < particles.length; j++) {
+            const q = particles[j];
+            const dx = p.x - q.x;
+            const dy = p.y - q.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+              const alpha = 1 - dist / 120;
+              ctx.strokeStyle = `rgba(0,255,255,${alpha})`;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(q.x, q.y);
+              ctx.stroke();
+            }
+          }
+        }
+        // 滑鼠與粒子的連線
+        if (mouse.active) {
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            const dx = p.x - mouse.x;
+            const dy = p.y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+              const alpha = 1 - dist / 120;
+              ctx.strokeStyle = `rgba(0,255,255,${alpha})`;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(mouse.x, mouse.y);
+              ctx.stroke();
+            }
+          }
+        }
+        // 繪製粒子（設定紫色光暈）
+        ctx.shadowColor = "#f0f";
+        ctx.fillStyle = "#f0f";
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2.5, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+        // 繪製滑鼠粒子
+        if (mouse.active) {
+          ctx.shadowColor = "#0ff";
+          ctx.fillStyle = "#0ff";
+          ctx.beginPath();
+          ctx.arc(mouse.x, mouse.y, 3, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // 科技幽默語錄功能
+    (function() {
+      const quotes = [
+        "世界上只有 10 種人：懂二進位的和不懂二進位的。",
+        "人工智慧也敵不過人類的天然愚蠢。",
+        "我想改變世界，但他們不給我原始碼。",
+        "一個 SQL 查詢走進酒吧，看到兩張表就問：可以加入你們嗎？"
+      ];
+      const img = document.getElementById('mainImage');
+      const quoteText = document.getElementById('tech-quote');
+      img.addEventListener('click', function() {
+        // 隨機選擇一則語錄
+        const idx = Math.floor(Math.random() * quotes.length);
+        quoteText.textContent = quotes[idx];
+      });
+    })();
+
+    // 平滑捲動導航
+    document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetID = this.getAttribute('href');
+        const target = document.querySelector(targetID);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
